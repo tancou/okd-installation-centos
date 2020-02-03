@@ -35,7 +35,7 @@ chmod +x get_helm.sh
 
 kubectl --namespace kube-system create serviceaccount tiller
 kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
-helm init --service-account tiller --upgrade
+/usr/local/bin/helm init --service-account tiller --upgrade
 
 
 echo "#####################################################################"

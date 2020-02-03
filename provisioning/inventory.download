@@ -23,6 +23,7 @@ debug_level=2
 openshift_additional_repos=[{'id': 'centos-paas', 'name': 'centos-paas', 'baseurl' :'https://buildlogs.centos.org/centos/7/paas/x86_64/openshift-origin311', 'gpgcheck' :'0', 'enabled' :'1'}]
 
 ansible_ssh_user=root
+ansible_become=yes
 enable_excluders=False
 enable_docker_excluder=False
 ansible_service_broker_install=False
