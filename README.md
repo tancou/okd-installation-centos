@@ -72,8 +72,8 @@
 
 ## ***Step 2***
 
-  ***Enable SELINUX=enforcing on all master/worker/infra nodes***
-  
+  ***Enable SELINUX=permissive on all master/worker/infra nodes***
+
 * `100.10.10.100 (okd-master-node)`
 * `100.10.10.101 (okd-worker-node-1)`
 * `100.10.10.102 (okd-worker-node-2)`
@@ -106,7 +106,7 @@
      
 ## ***Step 4***  
 
-*Checkout the code (git clone https://github.com/SubhakarKotta/okd-installation-centos.git)*
+*Checkout the code (git clone https://github.com/tancou/okd-installation-centos.git)*
 
 ***Configure okd-installation-centos/provisioning/settings.sh file***
   ![enter image description here](https://lh3.googleusercontent.com/zbeRg_vHfpg0iG0w70E0u6T-PEfK8czIN7FywGoaTOyo-giHgYI8ABg7s8WQOINds4sFNDbvkWqyZQ)

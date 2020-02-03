@@ -4,49 +4,156 @@ nodes
 etcd
 
 [masters]
-${OKD_MASTER_IP} openshift_ip=${OKD_MASTER_IP} openshift_schedulable=true 
+${OKD_MASTER_IP} 
 
 [etcd]
-${OKD_MASTER_IP} openshift_ip=${OKD_MASTER_IP}
+${OKD_MASTER_IP}
 
 [nodes]
-${OKD_MASTER_IP} openshift_ip=${OKD_MASTER_IP} openshift_node_group_name='node-config-master'
-${OKD_WORKER_NODE_1_IP} openshift_ip=${OKD_WORKER_NODE_1_IP} openshift_node_group_name='node-config-compute'
-${OKD_WORKER_NODE_2_IP} openshift_ip=${OKD_WORKER_NODE_2_IP} openshift_node_group_name='node-config-compute'
-${OKD_WORKER_NODE_3_IP} openshift_ip=${OKD_WORKER_NODE_3_IP} openshift_node_group_name='node-config-compute'
-${OKD_INFRA_NODE_1_IP} openshift_ip=${OKD_INFRA_NODE_1_IP} openshift_node_group_name='node-config-infra'
+${OKD_MASTER_IP} openshift_node_group_name='master' openshift_schedulable=true
+${OKD_WORKER_NODE_1_IP} openshift_node_group_name='node' openshift_schedulable=true
+${OKD_WORKER_NODE_2_IP} openshift_node_group_name='node' openshift_schedulable=true
+${OKD_WORKER_NODE_3_IP} openshift_node_group_name='node' openshift_schedulable=true
+${OKD_INFRA_NODE_1_IP} openshift_node_group_name='node' openshift_schedulable=true
 
 [OSEv3:vars]
+timeout=60
+debug_level=2
+
 openshift_additional_repos=[{'id': 'centos-paas', 'name': 'centos-paas', 'baseurl' :'https://buildlogs.centos.org/centos/7/paas/x86_64/openshift-origin311', 'gpgcheck' :'0', 'enabled' :'1'}]
 
-ansible_ssh_user=root
-enable_excluders=False
-enable_docker_excluder=False
-ansible_service_broker_install=False
+# OpenShift Version
+openshift_version=${OKD_VERSION}
+openshift_release="v${OKD_VERSION}"
+openshift_image_tag="v${OKD_VERSION}"
 
-containerized=True
-os_sdn_network_plugin_name='redhat/openshift-ovs-multitenant'
-openshift_disable_check=disk_availability,docker_storage,memory_availability,docker_image_availability
+# Default subdomain
+openshift_master_default_subdomain=odk.${KT_PUBLIC_IP}.nip.io
 
-deployment_type=origin
-openshift_deployment_type=origin
+# Master Cluster Method
+openshift_master_cluster_method=native
 
-template_service_broker_selector={"region":"infra"}
-openshift_metrics_image_version="v${OKD_VERSION}"
-openshift_logging_image_version="v${OKD_VERSION}"
-openshift_logging_elasticsearch_proxy_image_version="v1.0.0"
-openshift_logging_es_nodeselector={"node-role.kubernetes.io/infra":"true"}
-logging_elasticsearch_rollout_override=false
+# Master Cluster - Internal Hostname
+openshift_master_cluster_hostname=okd-master-${KT_PUBLIC_IP}.nip.io
+
+#enable ntp on master server
+openshift_clock_enabled = true
+
+# Master Cluster - External Hostname
+openshift_master_cluster_public_hostname=master-console-${KT_PUBLIC_IP}.nip.io
+openshift_public_hostname=master-console-${KT_PUBLIC_IP}.nip.io
+
+# Cockpit Dashboard
 osm_use_cockpit=true
 
-openshift_metrics_install_metrics=${INSTALL_METRICS} 
-openshift_logging_install_logging=${INSTALL_LOGGING} 
+# API & Web Console Ports
+openshift_master_api_port=${API_PORT}
+openshift_master_console_port=${API_PORT}
 
+# Web Console Login Auth Setting
+# htpasswd_auth
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider'}]
 openshift_master_htpasswd_file='/etc/origin/master/htpasswd'
 
-openshift_public_hostname=console.${DOMAIN}
-openshift_master_default_subdomain=apps.${DOMAIN}
+# OpenShift Example
+openshift_install_examples=true
 
-openshift_master_api_port=${API_PORT}
-openshift_master_console_port=${API_PORT}
+# Example Imagestream modify
+openshift_examples_modify_imagestreams=true
+
+# Hostname Validate
+openshift_set_hostname=false
+openshift_hostname_check=false
+openshift_override_hostname_check=true
+
+# Verify Requirements
+openshift_disable_check=disk_availability,docker_storage,memory_availability,docker_image_availability
+
+#### OpenShift Infra ####
+# Router Nodes
+openshift_hosted_manage_router=true
+openshift_router_selector='node-role.kubernetes.io/infra=true'
+openshift_hosted_router_replicas=1
+
+#### Enable Logging ####
+## Global Options ##
+# Install logging
+openshift_logging_install_logging=false
+
+# Logging Namespace
+openshift_logging=openshift-logging
+
+# Internal Master API URL
+openshift_logging_master_url=https://kubernetes.default.svc
+
+# External Master API URL
+openshift_logging_master_public_url=https://master-console-${KT_PUBLIC_IP}.nip.io
+
+#### Enable Prometheus Operator #### default = true
+openshift_cluster_monitoring_operator_install=false
+openshift_cluster_monitoring_operator_node_selector={"node-role.kubernetes.io/infra": "true"}
+
+#### Enable Hawkular Metrics ####
+### Global Settings ###
+# Value: true or false
+openshift_metrics_install_metrics=true
+openshift_metrics_install_logging=true
+
+#### Ansible Service Catalog & Broker ####
+# Disable service catalog (default: true)
+openshift_enable_service_catalog=false
+
+# Diable template service broker (requires service catalog to be enabled, above)
+ansible_service_broker_install=false
+ansible_service_broker_local_registry_whitelist=['.*-apb$']
+
+template_service_broker_install=false
+openshift_template_service_broker_namespaces=['openshift']
+
+#### OpenShift SDN ####
+openshift_portal_net=192.168.0.0/16
+osm_cluster_network_cidr=10.1.0.0/16
+
+# Configure the SDN plugin
+# Type:
+#  redhat/openshift-ovs-subnet
+#  redhat/openshift-ovs-multitenant
+#  redhat/openshift-ovs-networkpolicy
+
+os_sdn_network_plugin_name='redhat/openshift-ovs-networkpolicy'
+
+#### Certification Setting ####
+etcd_ca_default_days=3650
+openshift_ca_cert_expire_days=3650
+openshift_node_cert_expire_days=3650
+openshift_master_cert_expire_days=3650
+openshift_hosted_registry_cert_expire_days=3650
+
+#### OpenShift Cluster Nodes ####
+## Node group name ##
+# - node-config-master
+# - node-config-infra
+# - node-config-compute
+# - node-config-all-in-one
+# - node-config-master-infra
+#
+
+#use infra / worker 2 in one
+openshift_node_groups=[{'name': 'master', 'labels': ['node-role.kubernetes.io/master=true','runtime=docker']}, {'name': 'node', 'labels': ['node-role.kubernetes.io/node=true','node-role.kubernetes.io/infra=true','router=true','runtime=docker']}]
+
+# Default node selector
+osm_default_node_selector='node-role.kubernetes.io/node=true'
+
+openshift_deployment_type=origin
+openshift_service_type=origin
+openshift_hosted_infra_selector=""
+openshift_metrics_image_version="v3.11"
+openshift_logging_image_version="v3.11"
+openshift_logging_elasticsearch_proxy_image_version="v1.0.0"
+openshift_logging_es_nodeselector={"node-role.kubernetes.io/infra":"true"}
+logging_elasticsearch_rollout_override=false
+
+#web console
+openshift_web_console_install=true
+openshift_web_console_version=v3.11
+

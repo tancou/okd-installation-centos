@@ -5,6 +5,9 @@
 #OKD Version
 export OKD_VERSION=3.11
 
+#OKD KT ucloudbiz publicIP
+export KT_PUBLIC_IP=211.254.214.5
+
 #OKD Master Node Configuration
 export OKD_MASTER_IP=100.10.10.100
 export OKD_MASTER_HOSTNAME=okd-master-node
