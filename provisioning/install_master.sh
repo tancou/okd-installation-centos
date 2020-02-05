@@ -30,6 +30,7 @@ curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get_
 chmod +x get_helm.sh
 ./get_helm.sh
 
+export PATH="/usr/local/bin:$PATH"
 
 kubectl --namespace kube-system create serviceaccount tiller
 kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
