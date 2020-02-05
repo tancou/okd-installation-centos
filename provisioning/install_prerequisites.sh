@@ -10,6 +10,8 @@ ${OKD_WORKER_NODE_3_IP} ${OKD_WORKER_NODE_3_HOSTNAME}
 ${OKD_INFRA_NODE_1_IP} ${OKD_INFRA_NODE_1_HOSTNAME}
 EOF
 
+yum update -y
+
 # install the following base packages
 yum install -y wget
 yum install -y envsubst

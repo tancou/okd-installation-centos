@@ -6,23 +6,23 @@
 export OKD_VERSION=3.11
 
 #OKD Master Node Configuration
-export OKD_MASTER_IP=100.10.10.100
+export OKD_MASTER_IP=10.10.1.5
 export OKD_MASTER_HOSTNAME=okd-master-node
 
 #OKD Worker Node 1 Configuration
-export OKD_WORKER_NODE_1_IP=100.10.10.101
+export OKD_WORKER_NODE_1_IP=10.10.1.6
 export OKD_WORKER_NODE_1_HOSTNAME=okd-worker-node-1
 
 #OKD Worker Node 2 Configuration
-export OKD_WORKER_NODE_2_IP=100.10.10.102
+export OKD_WORKER_NODE_2_IP=10.10.1.7
 export OKD_WORKER_NODE_2_HOSTNAME=okd-worker-node-2
 
 #OKD Worker Node 3 Configuration
-export OKD_WORKER_NODE_3_IP=100.10.10.103
+export OKD_WORKER_NODE_3_IP=10.10.1.8
 export OKD_WORKER_NODE_3_HOSTNAME=okd-worker-node-3
 
 #OKD Infra Node 1 Configuration
-export OKD_INFRA_NODE_1_IP=100.10.10.104
+export OKD_INFRA_NODE_1_IP=10.10.1.9
 export OKD_INFRA_NODE_1_HOSTNAME=okd-infra-node-1
 
 #The  below setting will be used to access OKD console https://console.$DOMAIN:$API_PORT"
@@ -41,5 +41,5 @@ export OKD_PASSWORD=admin
 #Enable "True"  only if one of the VM has 4GB memory.
 export INSTALL_METRICS=False
 
-# Enable "True"  only one of the VM 16GB memory. 
+# Enable "True"  only one of the VM 16GB memory.
 export INSTALL_LOGGING=False
